@@ -17,4 +17,4 @@ setuptools==80.9.0
 pika==1.4.1
 sqlparse==0.5.3
 weasyprint==69.0
-
+gunicorn
