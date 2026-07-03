@@ -1,0 +1,40 @@
+<button id="pay-btn">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("pay-btn").onclick = async function () {
+
+    let response = await fetch("http://127.0.0.1:8000/create-order/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ '_id':13}) // ₹500
+    });
+
+    let data = await response.json();
+
+    let options = {
+        "key": data.key,
+        "amount": data.amount,
+        "currency": "INR",
+        "order_id": data.order_id,
+        "handler": function (response) {
+            console.log(response)
+
+            // send payment details to backend
+            fetch("http://127.0.0.1:8000/verify-payment/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(response)
+            });
+        }
+    };
+
+    let rzp = new Razorpay(options);
+    rzp.open();
+};
+</script>
